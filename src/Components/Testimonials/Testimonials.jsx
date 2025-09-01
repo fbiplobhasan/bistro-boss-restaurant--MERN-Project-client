@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaQuoteLeft } from "react-icons/fa";
 // import required modules
 import { Navigation } from "swiper/modules";
 // Import Swiper React components
@@ -33,6 +34,9 @@ const Testimonials = () => {
         {reviews.map((author) => (
           <SwiperSlide key={author._id}>
             <div className="flex flex-col items-center p-6 bg-base-200 rounded-lg text-center">
+              <div>
+                <p className="text-4xl"><FaQuoteLeft /></p>
+              </div>
               <Rating
                 style={{ maxWidth: 180 }}
                 value={author.rating}

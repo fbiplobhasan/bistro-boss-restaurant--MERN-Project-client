@@ -1,4 +1,5 @@
 import Home from '../Components/Home';
+import Menu from '../Pages/Menu/Menu/Menu';
 import Main from './../Main/Main';
 import {
   createBrowserRouter,
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
         {
             path: '/',
             element: <Home></Home>
+        },
+        {
+            path: '/menu',
+            element: <Menu></Menu>
         },
     ]
   },
