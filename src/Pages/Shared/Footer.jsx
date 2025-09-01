@@ -62,7 +62,7 @@ const Footer = () => {
         </nav>
       </footer>
       <div className="bg-base-200 flex items-center justify-center h-14">
-        <p class="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-gray-500">
           © 2025 Biplob Hasan. All rights reserved.
         </p>
       </div>
