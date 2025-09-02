@@ -1,5 +1,6 @@
 import Home from '../Components/Home';
 import Menu from '../Pages/Menu/Menu/Menu';
+import OrderFood from '../Pages/OrderFood/OrderFood';
 import Main from './../Main/Main';
 import {
   createBrowserRouter,
@@ -15,8 +16,12 @@ export const router = createBrowserRouter([
             element: <Home></Home>
         },
         {
-            path: '/menu',
+            path: 'menu',
             element: <Menu></Menu>
+        },
+        {
+            path: 'order/:category',
+            element: <OrderFood></OrderFood>
         },
     ]
   },
