@@ -1,0 +1,165 @@
+import { useContext, useEffect, useRef, useState } from "react";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
+import { sendPasswordResetEmail,auth } from "firebase/auth";
+
+const LogIn = () => {
+    const emailRef = useRef();
+  const navigate = useNavigate();
+  const captchaRef = useRef(null);
+  const [disabled, setDisabled] = useState(true);
+  const [showPassword, setShowPassword] = useState(false); // for show/hide password
+  const { signIn } = useContext(AuthContext);
+
+  // load captcha when component mounts
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      const result = await signIn( email, password);
+      console.log("Logged in user:", result.user);
+      toast.success("✅ Login Successful!");
+      navigate("/");
+    } catch (error) {
+      console.error("Login Error:", error.message);
+    }
+  };
+
+  const handleValidateCaptcha = () => {
+    const userCaptchaValue = captchaRef.current.value;
+    if (validateCaptcha(userCaptchaValue)) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  };
+
+  const handleForgetPassword = (e) => {
+    e.preventDefault();
+    console.log('get me email address',emailRef.current.value);
+    const email = emailRef.current.value;
+    if(!email){
+        console.log('please provide a valid email.');
+    } else {
+        sendPasswordResetEmail(auth,email)
+        .then(() => {
+            alert('Password reset email sent, please check your email')
+        })
+    }
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>Bistro Boss | Login</title>
+      </Helmet>
+
+      <div className="hero min-h-screen bg-base-200">
+        <div className="hero-content flex-col lg:flex-row-reverse gap-10">
+          {/* Left text */}
+          <div className="text-center lg:text-left max-w-md">
+            <h1 className="text-5xl font-bold mb-4">Login Now!</h1>
+            <p className="text-gray-600">
+              Welcome back! Please login to your account to continue enjoying
+              our services.
+            </p>
+          </div>
+
+          {/* Login Card */}
+          <div className="card w-full max-w-sm bg-white shadow-2xl">
+            <div className="card-body">
+              <form onSubmit={handleLogin}>
+                {/* Email */}
+                <label className="label font-semibold">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  ref={emailRef}
+                  required
+                  className="input input-bordered w-full"
+                  placeholder="Enter your email"
+                />
+
+                {/* Password */}
+                <label className="label font-semibold mt-4">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    required
+                    className="input input-bordered w-full"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+
+                {/* Captcha */}
+                <div className="mt-4">
+                  <LoadCanvasTemplate />
+                  <div className="flex gap-2 mt-2">
+                    <input
+                      type="text"
+                      ref={captchaRef}
+                      name="captcha"
+                      className="input input-bordered w-full"
+                      placeholder="Type captcha here"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleValidateCaptcha}
+                      className="btn btn-outline btn-primary"
+                    >
+                      Validate
+                    </button>
+                  </div>
+                </div>
+
+                {/* Login Button */}
+                <button
+                  disabled={disabled}
+                  type="submit"
+                  className="btn btn-neutral w-full mt-6"
+                >
+                  Login
+                </button>
+                <label onClick={handleForgetPassword} className="label">
+                    <a href="" className="label-text-alt link link-hover">Forgot password?</a>
+                </label>
+              </form>
+
+              {/* SignUp link */}
+              <p className="text-center mt-4 text-sm">
+                New Here?{" "}
+                <Link to="/signup" className="text-blue-500 underline">
+                  Create an account
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default LogIn;
