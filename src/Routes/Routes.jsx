@@ -2,6 +2,7 @@ import Home from '../Components/Home';
 import LogIn from '../Pages/LogIn/LogIn';
 import Menu from '../Pages/Menu/Menu/Menu';
 import OrderFood from '../Pages/OrderFood/OrderFood';
+import SignUP from '../Pages/SignUp/SignUP';
 import Main from './../Main/Main';
 import {
   createBrowserRouter,
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
         {
             path: 'login',
             element: <LogIn></LogIn>
+        },
+        {
+            path: 'signup',
+            element: <SignUP></SignUP>
         },
     ]
   },

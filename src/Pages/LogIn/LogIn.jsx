@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
   LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import { Link } from "react-router-dom";
 
 const LogIn = () => {
   const captchaRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
+  const { signIn } = useContext(AuthContext);
+
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
@@ -19,7 +23,13 @@ const LogIn = () => {
     const email = form.email.value;
     const password = form.password.value;
     const formData = { email, password };
-    console.log(formData);
+
+    signIn(email,password)
+    .then(result => {
+        const user = result.user;
+        console.log(user);
+    })
+    
   };
 
   const handleValidateCaptcha = () => {
@@ -29,7 +39,7 @@ const LogIn = () => {
     } else {
       setDisabled(true);
     }
-    console.log(value);
+
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -84,6 +94,7 @@ const LogIn = () => {
                 value="Login"
               />
             </form>
+            <p><small>New Here?</small> <Link to='/signup'>Create an account</Link> </p>
           </div>
         </div>
       </div>
