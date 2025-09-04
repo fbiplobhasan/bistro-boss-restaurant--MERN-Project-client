@@ -1,4 +1,6 @@
 import Home from '../Components/Home';
+import Dashboard from '../LayOuts/Dashboard';
+import Cart from '../Pages/Dashboard/Cart/Cart';
 import LogIn from '../Pages/LogIn/LogIn';
 import Menu from '../Pages/Menu/Menu/Menu';
 import OrderFood from '../Pages/OrderFood/OrderFood';
@@ -38,6 +40,16 @@ export const router = createBrowserRouter([
         {
             path: 'secret',
             element: <PrivateRoute><Secret></Secret></PrivateRoute>
+        },
+    ]
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard></Dashboard>,
+    children: [
+        {
+        path: "cart",
+        element: <Cart></Cart>
         },
     ]
   },

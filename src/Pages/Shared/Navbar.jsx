@@ -38,9 +38,9 @@ const Navbar = () => {
         <Link>OUR SHOP</Link>
       </li>
       <li>
-        <Link to='/'>
+        <Link to='/dashboard/cart'>
           <button className="btn">
-            <FaShoppingCart></FaShoppingCart> <div className="badge badge-sm badge-secondary">{cart.length}</div>
+            <FaShoppingCart></FaShoppingCart> <div className="badge badge-sm badge-secondary">+{cart.length}</div>
           </button>
         </Link>
       </li>
