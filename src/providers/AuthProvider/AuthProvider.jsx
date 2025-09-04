@@ -1,34 +1,65 @@
 import { createContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  sendEmailVerification,   // ✅ Email verify function import
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 import { app } from "../../firebase/firebase.config";
 
 export const AuthContext = createContext(null);
 export const auth = getAuth(app);
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const createUser = (email,password) => {
+  // create user
+  const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password)
-  }
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-  const signIn = (email,password) => {
+  // sign in
+  const signIn = (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth,email,password)
-  }
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
+  // log out
   const logOut = () => {
     setLoading(true);
     return signOut(auth);
-  }
+  };
 
+  // update user profile
   const updateUserProfile = (name, photo) => {
-        return updateProfile(auth.currentUser, {
-            displayName: name, photoURL: photo
-        });
-    }
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photo,
+    });
+  };
 
+  // ✅ forget password
+  const resetPassword = (email) => {
+    setLoading(true);
+    return sendPasswordResetEmail(auth, email);
+  };
+
+  // ✅ email verification
+  const verifyEmail = () => {
+    if (auth.currentUser) {
+      return sendEmailVerification(auth.currentUser);
+    } else {
+      return Promise.reject("No user found for email verification!");
+    }
+  };
+
+  // onAuthStateChanged
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -37,14 +68,18 @@ const AuthProvider = ({ children }) => {
     });
     return () => unsubscribe();
   }, []);
+
   const authInfo = {
     user,
     loading,
     createUser,
     signIn,
     logOut,
-    updateUserProfile
+    updateUserProfile,
+    resetPassword,
+    verifyEmail,
   };
+
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
@@ -12,11 +12,13 @@ import { toast } from "react-toastify";
 
 const LogIn = () => {
   const [disabled, setDisabled] = useState(true);
-  const { signIn } = useContext(AuthContext);
+  const { signIn, resetPassword } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const emailRef = useRef();
 
-    const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/";
+  console.log("state in the location ", location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -27,11 +29,21 @@ const LogIn = () => {
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    signIn(email, password).then((result) => {
-      const user = result.user;
-      toast.success('Successfully login')
-       navigate(from, { replace: true });
-    });
+    signIn(email, password)
+      .then((result) => {
+        const user = result.user;
+        // ✅ email verify check
+        // TODO: enable this code.
+        // if(!result.user.emailVerified){
+        //   toast.error("Please verify your email before login.");
+        //   return;
+        // }
+        toast.success("Successfully login");
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   const handleValidateCaptcha = (e) => {
@@ -41,6 +53,21 @@ const LogIn = () => {
     } else {
       setDisabled(true);
     }
+  };
+
+  const handleForgotPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      toast.error("Please enter your email first");
+      return;
+    }
+    resetPassword(email)
+      .then(() => {
+        toast.success("Password reset email sent! Please check your inbox.");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   return (
@@ -65,6 +92,7 @@ const LogIn = () => {
                 type="email"
                 className="input"
                 placeholder="Email"
+                ref={emailRef}
                 name="email"
               />
               <label className="label">Password</label>
@@ -75,7 +103,13 @@ const LogIn = () => {
                 name="password"
               />
               <div>
-                <a className="link link-hover">Forgot password?</a>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="link link-hover"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div>
                 <label>

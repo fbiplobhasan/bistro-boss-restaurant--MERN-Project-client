@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import { FaShoppingCart } from "react-icons/fa";
+import useCart from "../../hooks/useCart";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const [cart] = useCart();
 
   const handleLogOut = () => {
     logOut()
@@ -35,7 +38,11 @@ const Navbar = () => {
         <Link>OUR SHOP</Link>
       </li>
       <li>
-        <Link>CART</Link>
+        <Link to='/'>
+          <button className="btn">
+            <FaShoppingCart></FaShoppingCart> <div className="badge badge-sm badge-secondary">{cart.length}</div>
+          </button>
+        </Link>
       </li>
     </>
   );
@@ -62,7 +69,7 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow items-center"
           >
             {links}
           </ul>
@@ -70,7 +77,7 @@ const Navbar = () => {
         <a className="btn btn-ghost text-xl">Bistro Boss</a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{links}</ul>
+        <ul className="menu menu-horizontal px-1 items-center">{links}</ul>
       </div>
 
       <div className="navbar-end gap-4 px-4">
