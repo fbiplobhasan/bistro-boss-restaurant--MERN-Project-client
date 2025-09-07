@@ -2,13 +2,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
-  LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-toastify";
+import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 
 const LogIn = () => {
   const [disabled, setDisabled] = useState(true);
@@ -34,6 +34,7 @@ const LogIn = () => {
         const user = result.user;
         // ✅ email verify check
         // TODO: enable this code.
+
         // if(!result.user.emailVerified){
         //   toast.error("Please verify your email before login.");
         //   return;
@@ -73,7 +74,7 @@ const LogIn = () => {
   return (
     <>
       <Helmet>
-        <title>Bistro | Signup</title>
+        <title>Bistro | Login</title>
       </Helmet>
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
@@ -127,10 +128,16 @@ const LogIn = () => {
                 className="btn btn-neutral mt-4"
                 type="submit"
                 value="LogIn"
-                disabled={disabled}
+                // TODO:
+                disabled={false}
               />
+              <div>
+                <div className="divider"></div>
+                <SocialLogin></SocialLogin>
+              </div>
+              <div className="divider"></div>
             </form>
-            <p>
+            <p className="p-6">
               <small>
                 New Here? <Link to="/signup">Create an account</Link>
               </small>

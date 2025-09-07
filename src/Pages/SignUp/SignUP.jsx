@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
@@ -16,23 +19,34 @@ const SignUp = () => {
     useContext(AuthContext);
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    createUser(data.email, data.password).then((result) => {
+  const onSubmit = async (data) => {
+    try {
+      // 1. Firebase user create
+      const result = await createUser(data.email, data.password);
       const loggedUser = result.user;
-      console.log(loggedUser);
-      updateUserProfile(data.name, data.photoURL)
-        .then(() => {
-          console.log("user profile info updated");
-          // ✅ verify email
-          verifyEmail().then(() => {
-            toast.success("Verification email sent! Please check your inbox.");
-          });
-          navigate("/login");
-          reset();
-        })
-        .catch((error) => console.log(error));
-    });
+
+      // 2. Firebase profile update
+      await updateUserProfile(data.name, data.photoURL);
+
+      // 3. save user to the database
+      const userInfo = { name: data.name, email: data.email };
+      const res = await axiosPublic.post("/users", userInfo);
+
+      if (res.data.insertedId) {
+        toast.success("User created successfully.");
+      }
+
+      // 4. Verify email send
+      await verifyEmail();
+      toast.info("Verification email sent! Please check your inbox.");
+
+      // 5. Navigate & reset
+      navigate("/login");
+      reset();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong!");
+    }
   };
 
   return (
@@ -141,8 +155,13 @@ const SignUp = () => {
                   value="Sign Up"
                 />
               </div>
+              <div>
+                <div className="divider"></div>
+                <SocialLogin></SocialLogin>
+                <div className="divider"></div>
+              </div>
             </form>
-            <p>
+            <p className="p-6">
               <small>
                 Already have an account <Link to="/login">Login</Link>
               </small>

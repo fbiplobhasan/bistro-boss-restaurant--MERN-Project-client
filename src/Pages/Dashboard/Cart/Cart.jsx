@@ -54,7 +54,7 @@ const Cart = () => {
           </thead>
           <tbody>
             {cart.map((item, index) => (
-              <tr key={index._id}>
+              <tr key={index}>
                 <th>{index + 1}</th>
                 <td>
                   <div className="flex items-center gap-3">
