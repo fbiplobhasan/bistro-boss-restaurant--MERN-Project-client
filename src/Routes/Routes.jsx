@@ -113,7 +113,7 @@ export const router = createBrowserRouter([
         ),
         loader: ({ params }) => {
           console.log("params id ===>", params.id);
-          return fetch(`http://localhost:5000/menu/${params.id}`);
+          return fetch(`https://bistro-boss-restaurant-server-seven-ecru.vercel.app/menu/${params.id}`);
         },
       },
       {
