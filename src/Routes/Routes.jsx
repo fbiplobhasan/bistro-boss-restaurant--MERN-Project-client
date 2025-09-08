@@ -14,6 +14,10 @@ import SignUP from "../Pages/SignUp/SignUP";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Main from "./../Main/Main";
 import { createBrowserRouter } from "react-router-dom";
+import Payment from "./../Pages/Dashboard/Payment/Payment";
+import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
+import UserHome from "../Pages/Dashboard/UserHome/UserHome";
+import AdminHome from "../Pages/Dashboard/AdminHome/AdminHome";
 
 export const router = createBrowserRouter([
   {
@@ -63,7 +67,27 @@ export const router = createBrowserRouter([
         path: "cart",
         element: <Cart></Cart>,
       },
+      {
+        path: "payment",
+        element: <Payment></Payment>,
+      },
+      {
+        path: "paymentHistory",
+        element: <PaymentHistory></PaymentHistory>,
+      },
+      {
+        path: "userHome",
+        element: <UserHome></UserHome>,
+      },
       // admin only routes
+      {
+        path: "adminHome",
+        element: (
+          <AdminRoute>
+            <AdminHome></AdminHome>
+          </AdminRoute>
+        ),
+      },
       {
         path: "users",
         element: (
@@ -88,7 +112,7 @@ export const router = createBrowserRouter([
           </AdminRoute>
         ),
         loader: ({ params }) => {
-          console.log("params id ===>", params.id); 
+          console.log("params id ===>", params.id);
           return fetch(`http://localhost:5000/menu/${params.id}`);
         },
       },
